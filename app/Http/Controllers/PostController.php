@@ -9,8 +9,8 @@ class PostController extends Controller
     private $posts = [
         ['id' => 1, 'title' => 'Study', 'body' => 'No sleep', 'image' => '../../images/blog/brain.jpg'],
     
-        ['id' => 2, 'title' => 'exams', 'body' => 'aloot of exams', 'image' => '../../spring.jpg'],
-        ['id' => 3, 'title' => 'labs', 'body' => 'tough labs', 'image' => '../../yoou (1).jpg'],
+        ['id' => 2, 'title' => 'exams', 'body' => 'aloot of exams', 'image' => '../../images/blog/spring.jpg'],
+        ['id' => 3, 'title' => 'labs', 'body' => 'tough labs', 'image' => '../../images/blog/yoou (1).jpg'],
     ];
 
     function create(){
