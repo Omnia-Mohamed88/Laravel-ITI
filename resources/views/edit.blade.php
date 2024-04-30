@@ -9,7 +9,7 @@
                     <h1>Edit Post</h1>
                 </div>
                 <div class="card-body">
-                    <form >
+                    <form action="{{route('posts.update',$post['id'] )}}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
                         <div class="mb-3">

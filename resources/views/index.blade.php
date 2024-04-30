@@ -14,28 +14,37 @@
                         <th>ID</th>
                         <th>Title</th>
                         <th>Body</th>
+                        <th>Posted By</th>
+                        <th>Created At</th>
+                        <th>Updated At</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($posts as $post)
                     <tr>
-                        <td>{{ $post['id'] }}</td>
-                        <td>{{ $post['title'] }}</td>
-                        <td>{{ $post['body'] }}</td>
+                        <td>{{ $post->id }}</td>
+                        <td>{{ $post->title }}</td>
+                        <td>{{ $post->body }}</td>
+                        <td>{{ $post->posted_by}} </td>
+                        <td>{{ $post->created_at }}</td>
+                        <td>{{ $post->updated_at }}</td>
+
                         <td>
-                            <a href="{{route('posts.show',$post['id'] )}}" class="btn btn-sm btn-primary">View</a>
-                            <a href="{{route('posts.edit',$post['id'] )}}" class="btn btn-sm btn-primary">Edit</a>
-                            <form action="{{ route('posts.destroy', $post['id']) }}" method="POST" style="display: inline;">
+                            <a href="{{route('posts.show', $post->id)}}"> <i class="fas fa-eye"></i></a>
+                            <a href="{{route('posts.edit', $post->id)}}"> <i class="fas fa-edit m-2"></i></a>
+                            <form action="{{ route('posts.destroy', $post->id) }}" method="POST" style="display: inline;">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this post?')">Delete</button>
+                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this post?')" style="border: none; background: none;color:red; padding: 0; cursor: pointer;"> <i class="fas fa-trash"></i></button>
                             </form>
                         </td>
                     </tr>
                     @endforeach
                 </tbody>
             </table>
+            {{ $posts->links() }}
+
         </div>
     </div>
 </div>
