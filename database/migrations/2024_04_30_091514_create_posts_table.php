@@ -16,8 +16,10 @@ return new class extends Migration
             $table->string('title');
             $table->text('body');
             $table->string('image')->nullable();
-            $table->string('posted_by')->nullable();
+            $table->unsignedBigInteger('created_by'); 
             $table->timestamps();
+            $table->softDeletes(); 
+
         });
     }
 

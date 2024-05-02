@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Str;
 
 class PostController extends Controller
 {
@@ -19,39 +21,13 @@ class PostController extends Controller
         return view("create", ["users" => $users]);
     }
 
-    public function store(Request $request)
-    {
-        $validatedData = $request->validate([
-            'title' => 'required|max:255',
-            'body' => 'required',
-            'image' => 'required|image',
-            'created_by' => 'required', 
-        ]);
-
-        $post = new Post;
-        $post->title = $validatedData['title'];
-        $post->body = $validatedData['body'];
-        $post->image = $request->file('image')->store('images');
-
-        $postedBy = $request->input('created_by');
-        
-        $user = User::where('name', $postedBy)->first();
-
-        if ($user) {
-            $post->posted_by = $user->name;
-        } else {
-            $post->posted_by = 'Unknown User';
-        }
-
-        $post->save();
-
-        return redirect()->route('posts.index')->with('success', 'Post created successfully.');
-    }
-
+   
     public function index()
     {
         $posts = Post::paginate(3);
         return view("index", ["posts" => $posts]);
+        $users = User::all();
+        return view("index" , ["posts"=>$posts]);
     }
 
     public function show($id)
@@ -60,23 +36,47 @@ class PostController extends Controller
         return view("show", ["post" => $post]);
     }
 
+    function store(Request $request){
+        $request->validate([
+            'title' => 'required|min: 3|unique:posts',
+            'body' => 'required|min:10',
+            'image' => 'required',
+            'posted_by' => 'required', 
+        ]);
+        $request_params = request()->all();
+        $request_params['image'] = $filepath;
+        $post = Post::create($request_params);
+        return to_route('post.show', $post->id);
+    }
+
     public function edit($id)
     {
         $post = Post::findOrFail($id);
-        return view("edit", ["post" => $post]);
-    }
+        $users = User::all();
+
+        return view('edit', ["post"=>$post, "users"=>$users]);    }
 
     public function update(Request $request, $id)
     {
-        $validatedData = $request->validate([
-            'title' => 'required|max:255',
-            'body' => 'required',
-            'image' => 'sometimes|image',
-        ]);
-
         $post = Post::findOrFail($id);
-        $post->title = $validatedData['title'];
-        $post->body = $validatedData['body'];
+
+        $validated = request()->validate([
+            'title' => [
+                'required',
+                Rule::unique('posts')->ignore($post->id),'min:3'],
+            'body' => ['required','min:10'],
+            'created_by'=>['required']
+        ]);;
+        $request = request();
+
+        // $post->title = $validatedData['title'];
+        // $post->body = $validatedData['body'];
+        $update_data = request()->all();
+        $post->title = $update_data['title']; 
+        $post->body = $update_data['body'];
+        $post->created_by = $update_data['posted_by'];
+        $post->title_slug = Str ::slug($update_data['title']);
+        $post->image = $filepath;
 
         if ($request->hasFile('image')) {
             $imageName = time() . '.' . $request->image->getClientOriginalExtension();
@@ -99,5 +99,11 @@ class PostController extends Controller
         $post = Post::findOrFail($id);
         $post->delete();
         return redirect()->route('posts.index')->with('success', 'Post deleted successfully.');
+    }
+    public function restore()
+    {
+        $posts = Post::onlyTrashed()->get();
+        $posts->restore();
+        return redirect()->back()->with('success', $restoredCount . ' soft deleted posts');
     }
 }

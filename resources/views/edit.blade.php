@@ -24,6 +24,12 @@
                             <label for="image" class="form-label">Image</label>
                             <input type="file" class="form-control" id="image" name="image" accept="image/*">
                         </div>
+                        <label for="user">User:</label><br>
+        <select name="posted_by" id="user">
+            @foreach($users as $user)
+            <option value="{{ $user->id }}" @if($user->id === $post->created_by) selected @endif>{{ $user->name }}</option>
+            @endforeach
+        </select><br>
                         <button type="submit" class="btn btn-primary">Update</button>
                     </form>
                 </div>

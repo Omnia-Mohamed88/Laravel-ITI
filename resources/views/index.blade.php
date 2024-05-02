@@ -16,6 +16,7 @@
                         <th>Body</th>
                         <th>Posted By</th>
                         <th>Created At</th>
+                        <td> Slug</td>
                         <th>Updated At</th>
                         <th>Actions</th>
                     </tr>
@@ -26,8 +27,9 @@
                         <td>{{ $post->id }}</td>
                         <td>{{ $post->title }}</td>
                         <td>{{ $post->body }}</td>
-                        <td>{{ $post->posted_by}} </td>
-                        <td>{{ $post->created_at }}</td>
+                        <td>{{ $post->created_by}} </td>
+                        <td>{{ $post->created_at->format('Y/m/d H:i') }}</td>
+                        <td>{{ $post->title_slug }}</td>
                         <td>{{ $post->updated_at }}</td>
 
                         <td>

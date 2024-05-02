@@ -1,44 +1,49 @@
-@extends('layouts.myapp')
+@extends("layouts.app")
 
-@section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">
-                    <h1>Create a New Post</h1>
-                </div>
-                <div class="card-body">
-                    <form action="{{ route('posts.store') }}" method="POST" enctype="multipart/form-data">
-                        @csrf
-                        <div class="mb-3">
-                            <label for="title" class="form-label">Title</label>
-                            <input type="text" class="form-control" id="title" name="title" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="body" class="form-label">Body</label>
-                            <textarea class="form-control" id="body" name="body" rows="5" required></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="image" class="form-label">Image</label>
-                            <input type="file" class="form-control" id="image" name="image" accept="image/*" required>
-                        </div>
-                        <div class="mb-3">
-    <label for="created_by" class="form-label">Created by</label>
-    <select class="form-select" id="created_by" name="created_by" required>
-        <option value="">Select User</option>
-        @foreach($users as $user)
-            <option value="{{ $user->name }}">{{ $user->name }}</option>
-        @endforeach
-    </select>
-</div>
-                        <input type="hidden" name="posted_by" value="{{ auth()->id() }}">
-
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                    </form>
-                </div>
-            </div>
+@section("content")
+    <h1>Create Post</h1>
+    <form action="{{ route('posts.store') }}" method="post" enctype="multipart/form-data">
+        @csrf
+        <div class="form-group">
+        <label for="title">Title:</label><br>
+        <input type="text" class="form-control" id="title" name="title"
+        value="{{ old('title') }}"
+        ><br>
+        @error("title")
+            <div class="alert alert-danger">{{ $message }}</div>
+            
+        @enderror
         </div>
-    </div>
-</div>
+        <div class="form-group">
+        <label for="body">Body:</label><br>
+        <input id="body" class="form-control" name="body"
+        value="{{ old('body') }}"
+        ></input><br>
+        @error("body")
+            <div class="alert alert-danger">{{ $message }}</div>
+        
+        @enderror
+        </div>
+        <div class="form-group">
+        <label for="user">Select User:</label><br>
+        <select class="form-select" id="user" name="posted_by" aria-label="Select User">
+            @foreach($users as $user)
+                <option value="{{ $user->id }}">{{ $user->name }}</option>
+            @endforeach
+        </select><br>
+        @error("created_by")
+        <div class="alert alert-danger">{{ $message }}</div>
+            
+        @enderror
+        </div>
+
+        <div class="form-group">
+            <label for="image">image</label>
+            <input type="file" class="form-control-file" id="image" name="image">
+            @error('image')
+                <div class="alert alert-danger">{{ $message }}</div>
+            @enderror
+          </div>
+        <button type="submit">Submit</button>
+    </form>
 @endsection
